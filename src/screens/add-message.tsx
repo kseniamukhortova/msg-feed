@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles'
 import { Typography, Modal, createStyles } from '@material-ui/core'
 import { LimitedInput } from 'src/components/limited-input';
 import autobind from 'utils/autobind';
+import { MyInput } from 'src/components/input';
 
 interface Props {
     open: boolean
@@ -48,7 +49,7 @@ class PureAddNewMessage extends React.Component<Props, CtrlState> {
     
     render() {
         const { open, onClose } = this.props
-        const { classes } = this.props;
+        const { classes, authorId } = this.props;
         return (
             <Modal
                 aria-labelledby="simple-modal-title"
@@ -63,9 +64,15 @@ class PureAddNewMessage extends React.Component<Props, CtrlState> {
                         placeholder='Your message' 
                         limit={100} 
                         onChanged={this.onMessageChanged}/>
-                    {/* <Typography variant="subtitle1" id="simple-modal-description">
-                        
-                    </Typography> */}
+                    {
+                        authorId ? null : 
+                        <React.Fragment>
+                            <Typography id="simple-modal-description">
+                                Seems, this is your first message. Please, tell your name
+                            </Typography>
+                            <MyInput placeholder='Your name'/>
+                        </React.Fragment>
+                    }
                 </div>
             </Modal>
         )

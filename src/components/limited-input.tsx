@@ -1,24 +1,10 @@
 
 import * as React from 'react'
-import InputBase from '@material-ui/core/InputBase'
-import { withStyles } from '@material-ui/core/styles'
 import autobind from 'utils/autobind';
 import { Typography } from '@material-ui/core'
-
-const styles = (theme: any) => ({
-    bootstrapInput: {
-        borderRadius: 4,
-        color: theme.palette.common.black,
-        backgroundColor: theme.palette.common.white,
-        border: '1px solid #ced4da',
-        fontSize: 16,
-        padding: '10px 12px',
-        transition: theme.transitions.create(['border-color', 'box-shadow']),
-    },
-})
+import { MyInput } from './input';
 
 interface Props {
-    classes: any
     limit?: number
     placeholder?: string
     onChanged?: (value: string, isValid: boolean) => void
@@ -29,7 +15,7 @@ interface CtrlState {
     isValid: boolean
 }
 
-class WrappedLimitedInput extends React.Component<Props, CtrlState> {
+export class LimitedInput extends React.Component<Props, CtrlState> {
     state = {
         length: 0,
         isValid: false
@@ -46,18 +32,14 @@ class WrappedLimitedInput extends React.Component<Props, CtrlState> {
     }
 
     render() {
-        const { classes, limit, placeholder } = this.props
+        const { limit, placeholder } = this.props
         const { length, isValid } = this.state
         return (
             <React.Fragment>
-                <InputBase
-                    id="input-with-icon-grid"
+                <MyInput
                     multiline={true}
                     placeholder={placeholder}
-                    onChange={this.onChange}
-                    classes={{
-                        input: classes.bootstrapInput,
-                    }}
+                    onChanged={this.onChange}
                 />
                 {
                     limit ? 
@@ -72,5 +54,3 @@ class WrappedLimitedInput extends React.Component<Props, CtrlState> {
         )
     }
 }
-
-export const LimitedInput = withStyles(styles)(WrappedLimitedInput)
