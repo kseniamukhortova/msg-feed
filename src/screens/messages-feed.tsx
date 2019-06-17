@@ -16,7 +16,6 @@ interface CtrlState {
     addWinOpen: boolean
 }
 
-
 class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
     constructor(props: Props) {
         super(props)

@@ -20,28 +20,15 @@ interface Props {
     classes: any
     placeholder?: string
     multiline?: boolean
-    onChanged?: (value: string, isValid: boolean) => void
+    onChanged?: (value: string) => void
 }
 
-interface CtrlState {
-    length: number
-    isValid: boolean
-}
-
-class WrappedInput extends React.Component<Props, CtrlState> {
-    state = {
-        length: 0,
-        isValid: false
-    }
-
+class WrappedInput extends React.Component<Props> {
     @autobind
     onChange(event: any) {
-        const value = event.target.value
-        const length = value.length
         const { onChanged } = this.props
-        const isValid = !!length
-        this.setState({ length, isValid })
-        onChanged && onChanged(value, isValid)
+        const value = event.target.value
+        onChanged && onChanged(value)
     }
 
     render() {

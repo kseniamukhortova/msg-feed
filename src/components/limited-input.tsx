@@ -22,11 +22,10 @@ export class LimitedInput extends React.Component<Props, CtrlState> {
     }
 
     @autobind
-    onChange(event: any) {
-        const value = event.target.value
+    onChange(value: string) {
         const length = value.length
         const { limit, onChanged } = this.props
-        const isValid = length && (!limit || length <= limit)
+        const isValid = !!length && (!limit || length <= limit)
         this.setState({ length, isValid })
         onChanged && onChanged(value, isValid)
     }
