@@ -12,7 +12,7 @@ interface Props {
     authorId?: string
     onClose: () => void
     classes?: any
-    onSave?: () => void
+    onSave?: (text: string, authorName?: string) => void
 }
 
 interface CtrlState {
@@ -56,6 +56,14 @@ class PureAddNewMessage extends React.Component<Props, CtrlState> {
     onNameChanged(name: string) {
         this.setState({ name, isNameValid: name.length > 0 })
     }
+
+    @autobind
+    onSave() {
+        const { onSave, onClose } = this.props
+        const { message, name } = this.state
+        onSave && onSave(message, name)
+        onClose && onClose()
+    }
     
     render() {
         const { open, onClose, classes, authorId } = this.props;
@@ -90,7 +98,8 @@ class PureAddNewMessage extends React.Component<Props, CtrlState> {
                         <Button 
                             variant="contained" 
                             color="primary"
-                            disabled={!isValid}>
+                            disabled={!isValid}
+                            onClick={this.onSave}>
                             <CheckIcon/>
                             Save
                         </Button>

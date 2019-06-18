@@ -14,8 +14,7 @@ export class LocalStorage {
     }
     
     public static get(key: string) {
-        const val = LocalStorage.getItem(key)
-        return val ? JSON.parse(val) : null
+        return LocalStorage.getItem(key)
     }
 
     public static set(key: string, value: string) {

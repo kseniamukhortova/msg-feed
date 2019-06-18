@@ -10,6 +10,7 @@ import autobind from 'utils/autobind';
 interface Props {
     messages?: IMessage[]
     userId?: string
+    onSave?: (text: string, authorName?: string) => void
 }
 
 interface CtrlState {
@@ -35,7 +36,7 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
     }
 
     render() {
-        const { messages, userId } = this.props
+        const { messages, userId, onSave } = this.props
         return (
             <React.Fragment>
                 <Typography variant="h5">
@@ -53,7 +54,8 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
                 </Button>
                 <AddNewMessage 
                     authorId={userId}
-                    open={this.state.addWinOpen} 
+                    open={this.state.addWinOpen}
+                    onSave={onSave} 
                     onClose={this.onClose}/>
             </React.Fragment>
         )
@@ -72,7 +74,8 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
         )
     }
 }
-export const MessagesFeedScreen = inject(({ store: { messages, userId } }: ProviderStores) => ({
+export const MessagesFeedScreen = inject(({ store: { messages, userId, saveMessage } }: ProviderStores) => ({
     messages,
-    userId
+    userId,
+    onSave: saveMessage
 }))(observer(PureMessagesFeedScreen))

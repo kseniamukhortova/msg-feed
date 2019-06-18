@@ -2,7 +2,7 @@ import { types } from 'mobx-state-tree'
 // import { Author } from './author';
 
 export const Message = types.model('Message', {
-    id: types.number,
+    id: types.string,
     date: types.number,
     text: types.string,
     authorId: types.string,
