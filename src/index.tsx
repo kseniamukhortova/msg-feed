@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom'
 import App from './app'
 import { configureStore } from './store';
 import { Provider } from 'mobx-react';
-// import './index.css'
+import './index.css'
 
 function startApp() {
     const placeholder = document.getElementById('feed-app')

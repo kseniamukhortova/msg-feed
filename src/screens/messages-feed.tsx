@@ -8,6 +8,9 @@ import AddIcon from '@material-ui/icons/Add';
 import autobind from 'utils/autobind';
 import { Message, DATE_LOCALE, DATE_OPTIONS } from 'src/components/message';
 import { MyInput } from 'src/components/input';
+import './messages-feed.css'
+import { block } from 'bem-cn';
+const b = block('feed')
 
 interface Props {
     messages?: IMessage[]
@@ -46,8 +49,10 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
     render() {
         const { messages, userId, saveMessage, showAuthorScreen, search } = this.props
         return (
-            <React.Fragment>
-                <Typography variant="h5">
+            <div className={b()}>
+                <Typography 
+                    variant="h4"
+                    className={b('title').toString()}>
                     Messages Feed
                 </Typography>
                 <MyInput
@@ -70,6 +75,7 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
                         )
                 }
                 <Button 
+                    className={b('add').toString()}
                     variant="contained" 
                     color="primary"
                     onClick={this.onOpenAddNew}>
@@ -81,7 +87,7 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
                     open={this.state.addWinOpen}
                     onSave={saveMessage} 
                     onClose={this.onClose}/>
-            </React.Fragment>
+            </div>
         )
     }
 }

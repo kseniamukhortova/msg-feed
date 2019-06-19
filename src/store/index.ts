@@ -1,7 +1,6 @@
 import { types, flow } from 'mobx-state-tree'
 import { Message } from './message';
 import { getInitialData, saveMessage, getAuthorData} from 'src/service/api';
-import { LocalStorage } from 'utils/local-store';
 import { ScreenType } from 'src/app';
 import { Author } from './author';
 
@@ -9,16 +8,17 @@ export const AppStore = types
     .model('Store', {
         messages: types.array(Message),
         userId: types.maybe(types.string),
+        userName: types.maybe(types.string),
         screen: types.number,
         screenAuthor: types.maybe(Author),
         search: types.string
     })
     .actions(self => ({
         saveMessage: flow(function*(text: string, authorName?: string) {
-            const message = yield saveMessage(text, self.userId || undefined, authorName)
+            const message = yield saveMessage(text, self.userId || undefined, authorName || self.userName || undefined)
             self.messages.push(message)
             self.userId = message.authorId
-            LocalStorage.set(USERID_KEY, message.authorId)
+            self.userName = message.authorName
         }),
         showAuthorScreen: flow(function*(authorId: string) {
             const author = yield getAuthorData(authorId)
@@ -34,7 +34,6 @@ export const AppStore = types
     }))
 
 let store: any
-const USERID_KEY = 'userId'
 
 
 export function configureStore() {
@@ -42,13 +41,11 @@ export function configureStore() {
         return Promise.resolve(store)
     }
 
-    const userId = LocalStorage.get(USERID_KEY)
     return getInitialData()
         .then(data => data.messages, _err => [])
         .then(messages => {
             store = AppStore.create({
                 messages,
-                userId,
                 screen: ScreenType.MessagesFeed,
                 search: ''
             })

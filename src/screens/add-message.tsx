@@ -6,6 +6,9 @@ import { Typography, Modal, createStyles, Button } from '@material-ui/core'
 import { LimitedInput } from 'src/components/limited-input';
 import autobind from 'utils/autobind';
 import { MyInput } from 'src/components/input';
+import './add-message.css'
+import { block } from 'bem-cn';
+const b = block('add-message')
 
 interface Props {
     open: boolean
@@ -85,17 +88,18 @@ class PureAddNewMessage extends React.Component<Props, CtrlState> {
                         onChanged={this.onMessageChanged}/>
                     {
                         authorId ? null : 
-                        <React.Fragment>
+                        <div className={b('author').toString()}>
                             <Typography id="simple-modal-description">
                                 Seems, this is your first message. Please, tell your name
                             </Typography>
                             <MyInput 
                                 placeholder='Your name' 
                                 onChanged={this.onNameChanged}/>
-                        </React.Fragment>
+                        </div>
                     }
-                    <div>
+                    <div className={b('buttons').toString()}>
                         <Button 
+                            className={b('save').toString()}
                             variant="contained" 
                             color="primary"
                             disabled={!isValid}
@@ -104,6 +108,7 @@ class PureAddNewMessage extends React.Component<Props, CtrlState> {
                             Save
                         </Button>
                         <Button 
+                            className={b('cancel').toString()}
                             variant="contained" 
                             color="secondary"
                             onClick={onClose}>

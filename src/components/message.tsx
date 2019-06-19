@@ -2,6 +2,9 @@ import * as React from 'react'
 import { IMessage } from 'src/store/message';
 import { Typography, Link } from '@material-ui/core';
 import autobind from 'utils/autobind';
+import './message.css'
+import { block } from 'bem-cn';
+const b = block('message')
 
 interface Props {
     message: IMessage
@@ -21,7 +24,10 @@ export class Message extends React.Component<Props> {
     render() {
         const { message: { text, authorName, date, id }, showAuthor } = this.props
         return (
-            <div key={id}>
+            <div key={id} className={b().toString()}>
+                <Typography className={b('date').toString()}>
+                    {new Date(date).toLocaleDateString(DATE_LOCALE, DATE_OPTIONS)}
+                </Typography>
                 {
                     showAuthor ? 
                         <Typography>
@@ -32,9 +38,8 @@ export class Message extends React.Component<Props> {
                             </Link>
                         </Typography> : null
                 }
-                <Typography>{new Date(date).toLocaleDateString(DATE_LOCALE, DATE_OPTIONS)}</Typography>
+                
                 <Typography>{text}</Typography>
-                <hr/>
             </div>
         )
     }

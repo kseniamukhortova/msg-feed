@@ -6,6 +6,9 @@ import { Typography, Button } from '@material-ui/core'
 import BackIcon from '@material-ui/icons/ArrowBack';
 import { IAuthor } from 'src/store/author';
 import { Message } from 'src/components/message';
+import './author.css'
+import { block } from 'bem-cn';
+const b = block('author')
 
 interface Props {
     author?: IAuthor
@@ -25,11 +28,18 @@ class PureAuthorScreen extends React.Component<Props> {
                     onClick={back}>
                     <BackIcon/>Back
                 </Button>
-                <Typography variant="h5">
+                <Typography 
+                    variant="h5"
+                    className={b('title').toString()}>
                     Author: {name}
                 </Typography>
-                <Typography variant="h6">
+                <Typography>
                     {bio}
+                </Typography>
+                <Typography 
+                    variant="h6"
+                    className={b('title').toString()}>
+                    Messages
                 </Typography>
                 {(messages!
                     .filter(m => m.authorId === id)
