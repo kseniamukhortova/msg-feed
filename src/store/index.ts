@@ -10,7 +10,8 @@ export const AppStore = types
         messages: types.array(Message),
         userId: types.maybe(types.string),
         screen: types.number,
-        screenAuthor: types.maybe(Author)
+        screenAuthor: types.maybe(Author),
+        search: types.string
     })
     .actions(self => ({
         saveMessage: flow(function*(text: string, authorName?: string) {
@@ -26,6 +27,9 @@ export const AppStore = types
         }),
         toMessageFeed() {
             self.screen = ScreenType.MessagesFeed
+        },
+        saveSearch(search: string) {
+            self.search = search
         }
     }))
 
@@ -45,7 +49,8 @@ export function configureStore() {
             store = AppStore.create({
                 messages,
                 userId,
-                screen: ScreenType.MessagesFeed
+                screen: ScreenType.MessagesFeed,
+                search: ''
             })
             return store
         })

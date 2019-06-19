@@ -9,6 +9,9 @@ interface Props {
     showAuthorScreen?: (authorId: string) => void
 }
 
+export const DATE_OPTIONS = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: "2-digit" };
+export const DATE_LOCALE = "en-UK"
+
 export class Message extends React.Component<Props> {
     @autobind
     onAuthor() {
@@ -17,7 +20,6 @@ export class Message extends React.Component<Props> {
     }
     render() {
         const { message: { text, authorName, date, id }, showAuthor } = this.props
-        var options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: "2-digit" };
         return (
             <div key={id}>
                 {
@@ -30,7 +32,7 @@ export class Message extends React.Component<Props> {
                             </Link>
                         </Typography> : null
                 }
-                <Typography>{new Date(date).toLocaleDateString("en-UK", options)}</Typography>
+                <Typography>{new Date(date).toLocaleDateString(DATE_LOCALE, DATE_OPTIONS)}</Typography>
                 <Typography>{text}</Typography>
                 <hr/>
             </div>

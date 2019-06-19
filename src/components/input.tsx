@@ -21,6 +21,7 @@ interface Props {
     placeholder?: string
     multiline?: boolean
     onChanged?: (value: string) => void
+    initValue?: string
 }
 
 class WrappedInput extends React.Component<Props> {
@@ -32,10 +33,10 @@ class WrappedInput extends React.Component<Props> {
     }
 
     render() {
-        const { classes, placeholder, multiline } = this.props
+        const { classes, placeholder, multiline, initValue } = this.props
         return (
             <InputBase
-                id="input-with-icon-grid"
+                value={initValue}
                 multiline={multiline}
                 placeholder={placeholder}
                 onChange={this.onChange}
