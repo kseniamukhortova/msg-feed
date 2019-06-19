@@ -6,11 +6,13 @@ import { inject, observer } from 'mobx-react'
 import { Typography, Button } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add';
 import autobind from 'utils/autobind';
+import { Message } from 'src/components/message';
 
 interface Props {
     messages?: IMessage[]
     userId?: string
-    onSave?: (text: string, authorName?: string) => void
+    saveMessage?: (text: string, authorName?: string) => void
+    showAuthorScreen?: (authorId: string) => void
 }
 
 interface CtrlState {
@@ -18,11 +20,8 @@ interface CtrlState {
 }
 
 class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
-    constructor(props: Props) {
-        super(props)
-        this.state = {
-            addWinOpen: false
-        }
+    state = {
+        addWinOpen: false
     }
 
     @autobind
@@ -36,14 +35,20 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
     }
 
     render() {
-        const { messages, userId, onSave } = this.props
+        const { messages, userId, saveMessage, showAuthorScreen } = this.props
         return (
             <React.Fragment>
                 <Typography variant="h5">
                     Messages Feed
                 </Typography>
                 {
-                    (messages!).map(m => this.renderItem(m))
+                    (messages!).map(m => 
+                        <Message 
+                            key={m.id}
+                            message={m} 
+                            showAuthor={true}
+                            showAuthorScreen={showAuthorScreen}/>
+                    )
                 }
                 <Button 
                     variant="contained" 
@@ -55,27 +60,20 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
                 <AddNewMessage 
                     authorId={userId}
                     open={this.state.addWinOpen}
-                    onSave={onSave} 
+                    onSave={saveMessage} 
                     onClose={this.onClose}/>
             </React.Fragment>
         )
     }
-
-    renderItem({ text, authorName, date, id }: IMessage) {
-        var options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: "2-digit" };
-
-        return (
-            <div key={id.toString()}>
-                <Typography>{authorName}</Typography>
-                <Typography>{new Date(date).toLocaleDateString("en-UK", options)}</Typography>
-                <Typography>{text}</Typography>
-                <hr/>
-            </div>
-        )
-    }
 }
-export const MessagesFeedScreen = inject(({ store: { messages, userId, saveMessage } }: ProviderStores) => ({
-    messages,
-    userId,
-    onSave: saveMessage
-}))(observer(PureMessagesFeedScreen))
+export const MessagesFeedScreen = inject(({ 
+    store: { 
+        messages, userId, saveMessage, showAuthorScreen
+    }}: ProviderStores) => 
+    ({
+        messages,
+        userId,
+        saveMessage,
+        showAuthorScreen
+    })
+)(observer(PureMessagesFeedScreen))

@@ -1,15 +1,16 @@
 import { types, flow } from 'mobx-state-tree'
 import { Message } from './message';
-import { getInitialData, saveMessage } from 'src/service/api';
+import { getInitialData, saveMessage, getAuthorData} from 'src/service/api';
 import { LocalStorage } from 'utils/local-store';
 import { ScreenType } from 'src/app';
+import { Author } from './author';
 
 export const AppStore = types
     .model('Store', {
         messages: types.array(Message),
         userId: types.maybe(types.string),
         screen: types.number,
-        screenAuthor: types.maybe(types.string)
+        screenAuthor: types.maybe(Author)
     })
     .actions(self => ({
         saveMessage: flow(function*(text: string, authorName?: string) {
@@ -18,6 +19,14 @@ export const AppStore = types
             self.userId = message.authorId
             LocalStorage.set(USERID_KEY, message.authorId)
         }),
+        showAuthorScreen: flow(function*(authorId: string) {
+            const author = yield getAuthorData(authorId)
+            self.screen = ScreenType.Author
+            self.screenAuthor = author
+        }),
+        toMessageFeed() {
+            self.screen = ScreenType.MessagesFeed
+        }
     }))
 
 let store: any

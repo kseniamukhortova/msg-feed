@@ -2,6 +2,7 @@ import * as React from 'react'
 import { observer, inject } from 'mobx-react'
 import { IAppStore, ProviderStores } from './store';
 import { MessagesFeedScreen } from './screens/messages-feed';
+import { AuthorScreen } from './screens/author';
 
 export enum ScreenType {
     MessagesFeed, Author
@@ -16,6 +17,8 @@ class App extends React.Component<Props> {
         switch (this.props.store!.screen) {
             case ScreenType.MessagesFeed:
                 return <MessagesFeedScreen />
+            case ScreenType.Author:
+                return <AuthorScreen />
             default:
                 return null
         }

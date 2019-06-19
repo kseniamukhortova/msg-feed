@@ -30,22 +30,25 @@ let messages = [
     }
 ]
 
-let users = [
+let authors = [
     {
-        userId: 'usr1',
-        name: 'John Doe'
+        id: 'usr1',
+        name: 'John Doe',
+        bio: 'Bio of John Doe'
     },
     {
-        userId: 'usr2',
-        name: 'Alex'
+        id: 'usr2',
+        name: 'Alex',
+        bio: 'Bio of Alex'
     },
     {
-        userId: 'usr3',
-        name: 'Norma'
+        id: 'usr3',
+        name: 'Norma',
+        bio: 'Bio of Norma'
     }
 ]
 let msgIdCounter = messages.length
-let userIdCounter = users.length
+let userIdCounter = authors.length
 
 export function getInitialData() {
     return Promise.resolve(<Messages>{ messages })
@@ -54,14 +57,14 @@ export function getInitialData() {
 export function saveMessage(text: string, userId?: string, userName?: string) {
     let _userName: string
     let _userId: string
-    const found = users.find(u => u.userId === userId)
+    const found = authors.find(u => u.id === userId)
     if (found) {
         _userName = found.name
         _userId = userId!
     } else {
         _userId = userId || `usr${++userIdCounter}`
         _userName = userName || 'Dummy Name'
-        users.push({ userId: _userId, name: _userName })
+        authors.push({ id: _userId, name: _userName, bio: 'Dummy bio' })
     }
 
     const msgId = `msg${++msgIdCounter}`
@@ -74,4 +77,8 @@ export function saveMessage(text: string, userId?: string, userName?: string) {
     } as IMessage
     messages.push(newMessage)
     return Promise.resolve(newMessage)
+}
+
+export function getAuthorData(authorId: string) {
+    return Promise.resolve(authors.find(u => u.id === authorId))
 }
