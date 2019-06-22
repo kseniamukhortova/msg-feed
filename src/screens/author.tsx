@@ -7,40 +7,37 @@ import BackIcon from '@material-ui/icons/ArrowBack';
 import { IAuthor } from 'src/store/author';
 import { Message } from 'src/components/message';
 import { block } from 'bem-cn';
-import { getAuthorData } from 'src/service/api';
 import { withRouter, RouteComponentProps } from "react-router-dom";
 const b = block('author')
 import './author.css'
 
 interface Props extends RouteComponentProps<{id: string}> {
     messages?: IMessage[]
-    getAuthorData?: (authorId: string) => Promise<IAuthor>
-}
-
-interface CtrlState {
     author?: IAuthor
-    ntf?: string
 }
 
-class PureAuthorScreen extends React.Component<Props, CtrlState> {
-    state: CtrlState = { author: undefined, ntf: 'Loading author data' }
-    
-    componentDidMount() {
-        getAuthorData(this.props.match.params.id)
-            .then(author => {
-                if (author) {
-                    this.setState({ author })
-                } else {
-                    this.setState({ ntf: 'Author not found' })
-                }
-            }, () => {
-                this.setState({ ntf: 'Error loading data' })
-            })
-    }
+class PureAuthorScreen extends React.Component<Props> {
 
+    renderAdditionalData(author: IAuthor) {
+        return Object.keys(author.data)
+            .filter(key => 
+                key !== 'id' && 
+                key !== 'name')
+            .map(key => 
+                <React.Fragment key={key}>
+                    <Typography 
+                    variant="h6"
+                    className={b('title').toString()}>
+                        {key}:
+                    </Typography>
+                    <Typography>
+                        {author.data[key]}
+                    </Typography>
+                </React.Fragment>
+            )
+    }
     render() {
-        const { messages, history } = this.props
-        const { author, ntf: msg } = this.state
+        const { messages, history, author } = this.props
         return (
             <React.Fragment>
                 <Button 
@@ -53,7 +50,7 @@ class PureAuthorScreen extends React.Component<Props, CtrlState> {
                     !author ? 
                     <Typography
                         className={b('ntf').toString()}>
-                        {msg}
+                        Author not found
                     </Typography> :
                     <React.Fragment>
                         <Typography 
@@ -61,19 +58,18 @@ class PureAuthorScreen extends React.Component<Props, CtrlState> {
                             className={b('title').toString()}>
                             Author: {author.name}
                         </Typography>
-                        <Typography>
-                            {author.bio}
-                        </Typography>
+                        { this.renderAdditionalData(author) }
                         <Typography 
                             variant="h6"
                             className={b('title').toString()}>
                             Messages
                         </Typography>
                         {(messages!
-                            .filter(m => m.authorId === author.id)
+                            .filter(m => m.userId === author.id)
                             .map(m => 
                                 <Message 
                                     key={m.id}
+                                    author={author}
                                     message={m} 
                                     showAuthor={false}/>
                             )
@@ -86,8 +82,13 @@ class PureAuthorScreen extends React.Component<Props, CtrlState> {
 }
 export const AuthorScreen = inject(({ 
     store: { 
-        messages, getAuthorData
-    } }: ProviderStores) => ({
-    messages,
-    getAuthorData
-}))(withRouter(observer(PureAuthorScreen)))
+        messages, getAuthor
+    }}: ProviderStores, props: Props) => {
+        const userId = parseInt(props.match.params.id)
+        const author = userId ? getAuthor(userId) : null
+        return {
+            messages,
+            author
+        }   
+    }
+)(withRouter(observer(PureAuthorScreen)))

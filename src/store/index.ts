@@ -1,24 +1,35 @@
 import { types, flow } from 'mobx-state-tree'
 import { Message } from './message';
-import { getInitialData, saveMessage, getAuthorData} from 'src/service/api';
+import { saveMessage, getMessages, getUsers, saveAuthor } from 'src/service/api';
+import { Author } from './author';
 
 export const AppStore = types
     .model('Store', {
         messages: types.array(Message),
-        userId: types.maybe(types.string),
+        users: types.array(Author),
+        userId: types.maybe(types.number),
         userName: types.maybe(types.string),
         search: types.string
     })
     .actions(self => ({
         saveMessage: flow(function*(text: string, authorName?: string) {
-            const message = yield saveMessage(text, self.userId || undefined, authorName || self.userName || undefined)
+            const found = self.userId ? self.users.find(u => u.id === self.userId) : null
+            const author = yield (
+                found ? Promise.resolve(found): 
+                saveAuthor(authorName!)
+            )
+            if (!found) {
+                self.users.push(author)
+            }
+
+            const message = yield saveMessage(text, author.id)
             self.messages.push(message)
-            self.userId = message.authorId
-            self.userName = message.authorName
+            self.userId = author.id
+            self.userName = author.name
         }),
-        getAuthorData: flow(function*(authorId: string) {
-            return getAuthorData(authorId)
-        }),
+        getAuthor(authorId: number) {
+            return self.users.find(u => u.id === authorId)
+        },
         saveSearch(search: string) {
             self.search = search
         }
@@ -32,11 +43,11 @@ export function configureStore() {
         return Promise.resolve(store)
     }
 
-    return getInitialData()
-        .then(data => data.messages, _err => [])
-        .then(messages => {
+    return Promise.all([getMessages(), getUsers()])
+        .then(([messages, users]: any[]) => {
             store = AppStore.create({
                 messages,
+                users,
                 search: ''
             })
             return store

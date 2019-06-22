@@ -1,9 +1,9 @@
 import { types } from 'mobx-state-tree'
 
 export const Author = types.model('Author', {
-    id: types.string,
+    id: types.number,
     name: types.string,
-    bio: types.string
+    data: types.frozen
 })
 
 export type IAuthor = typeof Author.Type

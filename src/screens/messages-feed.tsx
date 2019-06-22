@@ -10,11 +10,13 @@ import { Message, DATE_LOCALE, DATE_OPTIONS } from 'src/components/message';
 import { MyInput } from 'src/components/input';
 import './messages-feed.css'
 import { block } from 'bem-cn';
+import { IAuthor } from 'src/store/author';
 const b = block('feed')
 
 interface Props {
     messages?: IMessage[]
     userId?: string
+    getAuthor: (id: number) => IAuthor,
     saveMessage?: (text: string, authorName?: string) => void
     search?: string
     saveSearch?: (search: string) => void
@@ -46,7 +48,7 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
     }
 
     render() {
-        const { messages, userId, saveMessage, search } = this.props
+        const { messages, userId, saveMessage, search, getAuthor } = this.props
         return (
             <div className={b()}>
                 <Typography 
@@ -61,25 +63,29 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
                 />
                 {
                     (messages!)
-                        .filter(m => !search || 
-                            m.text.toLowerCase().indexOf(search) >= 0 ||
-                            m.authorName.toLowerCase().indexOf(search) >= 0 ||
+                        .map(m => ({message: m, author: getAuthor(m.userId)}))
+                        .filter(({message: m, author}) => !search || 
+                            m.message.toLowerCase().indexOf(search) >= 0 ||
+                            author.name.toLowerCase().indexOf(search) >= 0 ||
                             (new Date(m.date)).toLocaleDateString(DATE_LOCALE, DATE_OPTIONS).toLowerCase().indexOf(search) >= 0
-                        ).map(m => 
+                        ).map(({message: m, author}) => 
                             <Message 
                                 key={m.id}
                                 message={m} 
+                                author={author}
                                 showAuthor={true}/>
                         )
                 }
-                <Button 
-                    className={b('add').toString()}
-                    variant="contained" 
-                    color="primary"
-                    onClick={this.onOpenAddNew}>
-                    <AddIcon/>
-                    New message
-                </Button>
+                <div>
+                    <Button 
+                        className={b('add').toString()}
+                        variant="contained" 
+                        color="primary"
+                        onClick={this.onOpenAddNew}>
+                        <AddIcon/>
+                        New message
+                    </Button>
+                </div>
                 <AddNewMessage 
                     authorId={userId}
                     open={this.state.addWinOpen}
@@ -91,13 +97,14 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
 }
 export const MessagesFeedScreen = inject(({ 
     store: { 
-        messages, userId, saveMessage, search, saveSearch
+        messages, userId, saveMessage, search, saveSearch, getAuthor
     }}: ProviderStores) => 
     ({
         messages,
         userId,
         saveMessage,
         search,
-        saveSearch
+        saveSearch,
+        getAuthor
     })
 )(observer(PureMessagesFeedScreen))

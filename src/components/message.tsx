@@ -4,10 +4,12 @@ import { Typography } from '@material-ui/core';
 import { Link } from "react-router-dom";
 import './message.css'
 import { block } from 'bem-cn';
+import { IAuthor } from 'src/store/author';
 const b = block('message')
 
 interface Props {
     message: IMessage
+    author: IAuthor
     showAuthor: boolean
 }
 
@@ -16,7 +18,7 @@ export const DATE_LOCALE = "en-UK"
 
 export class Message extends React.Component<Props> {
     render() {
-        const { message: { text, authorName, date, id, authorId }, showAuthor } = this.props
+        const { message: { message, date, id, userId }, author, showAuthor } = this.props
         return (
             <div key={id} className={b().toString()}>
                 <Typography className={b('date').toString()}>
@@ -25,13 +27,13 @@ export class Message extends React.Component<Props> {
                 {
                     showAuthor ? 
                         <Typography>
-                            <Link to={`/author/${authorId}`}>
-                            {authorName}
+                            <Link to={`/author/${userId}`}>
+                            {author.name}
                             </Link>
                         </Typography> : null
                 }
                 
-                <Typography>{text}</Typography>
+                <Typography>{message}</Typography>
             </div>
         )
     }
