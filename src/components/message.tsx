@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { IMessage } from 'src/store/message';
-import { Typography, Link } from '@material-ui/core';
-import autobind from 'utils/autobind';
+import { Typography } from '@material-ui/core';
+import { Link } from "react-router-dom";
 import './message.css'
 import { block } from 'bem-cn';
 const b = block('message')
@@ -9,20 +9,14 @@ const b = block('message')
 interface Props {
     message: IMessage
     showAuthor: boolean
-    showAuthorScreen?: (authorId: string) => void
 }
 
 export const DATE_OPTIONS = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: "2-digit" };
 export const DATE_LOCALE = "en-UK"
 
 export class Message extends React.Component<Props> {
-    @autobind
-    onAuthor() {
-        const { showAuthorScreen, message: { authorId } } = this.props
-        showAuthorScreen && showAuthorScreen(authorId)
-    }
     render() {
-        const { message: { text, authorName, date, id }, showAuthor } = this.props
+        const { message: { text, authorName, date, id, authorId }, showAuthor } = this.props
         return (
             <div key={id} className={b().toString()}>
                 <Typography className={b('date').toString()}>
@@ -31,9 +25,7 @@ export class Message extends React.Component<Props> {
                 {
                     showAuthor ? 
                         <Typography>
-                            <Link
-                                type='button'
-                                onClick={this.onAuthor}>
+                            <Link to={`/author/${authorId}`}>
                             {authorName}
                             </Link>
                         </Typography> : null

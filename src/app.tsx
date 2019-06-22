@@ -3,10 +3,7 @@ import { observer, inject } from 'mobx-react'
 import { IAppStore, ProviderStores } from './store';
 import { MessagesFeedScreen } from './screens/messages-feed';
 import { AuthorScreen } from './screens/author';
-
-export enum ScreenType {
-    MessagesFeed, Author
-}
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 interface Props {
     store?: IAppStore
@@ -14,14 +11,12 @@ interface Props {
 
 class App extends React.Component<Props> {
     render() {
-        switch (this.props.store!.screen) {
-            case ScreenType.MessagesFeed:
-                return <MessagesFeedScreen />
-            case ScreenType.Author:
-                return <AuthorScreen />
-            default:
-                return null
-        }
+        return (
+            <Router>
+                <Route path="/" exact={true} component={MessagesFeedScreen} />
+                <Route path="/author/:id" component={AuthorScreen} />
+            </Router>
+        )
     }
 }
 

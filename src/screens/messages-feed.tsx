@@ -16,7 +16,6 @@ interface Props {
     messages?: IMessage[]
     userId?: string
     saveMessage?: (text: string, authorName?: string) => void
-    showAuthorScreen?: (authorId: string) => void
     search?: string
     saveSearch?: (search: string) => void
 }
@@ -47,7 +46,7 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
     }
 
     render() {
-        const { messages, userId, saveMessage, showAuthorScreen, search } = this.props
+        const { messages, userId, saveMessage, search } = this.props
         return (
             <div className={b()}>
                 <Typography 
@@ -70,8 +69,7 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
                             <Message 
                                 key={m.id}
                                 message={m} 
-                                showAuthor={true}
-                                showAuthorScreen={showAuthorScreen}/>
+                                showAuthor={true}/>
                         )
                 }
                 <Button 
@@ -93,13 +91,12 @@ class PureMessagesFeedScreen extends React.Component<Props, CtrlState> {
 }
 export const MessagesFeedScreen = inject(({ 
     store: { 
-        messages, userId, saveMessage, showAuthorScreen, search, saveSearch
+        messages, userId, saveMessage, search, saveSearch
     }}: ProviderStores) => 
     ({
         messages,
         userId,
         saveMessage,
-        showAuthorScreen,
         search,
         saveSearch
     })
