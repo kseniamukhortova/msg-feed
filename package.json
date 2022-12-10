@@ -8,7 +8,7 @@
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "3.0.1",
     "bem-cn": "^3.0.0",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "mobx": "5.10.1",
     "mobx-react": "^5.2.3",
     "mobx-state-tree": "^2.1.0",
